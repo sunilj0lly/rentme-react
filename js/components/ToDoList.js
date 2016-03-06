@@ -1,3 +1,4 @@
+"use strict";
 var React = require('react');
 var Actions = require('../actions.js')
 
@@ -6,11 +7,8 @@ module.exports = React.createClass({
     //mixins: [Reflux.connect(todoListStore,"list")],
     getInitialState: function() {
         return {
-            input: 'Enter your text here',
-            list: [
-                "first item",
-                "second item"
-            ],
+            input: 'Add a new to do item',
+            list: [],
             inputValue: null
         };
     },
@@ -22,15 +20,28 @@ module.exports = React.createClass({
         this.setState({inputValue: e.target.value});
     },
     render: function() {
+
         return (
             <div>
                 <section>
                     <h1>Things that need to get done</h1>
-                    <ul>
-                    { this.state.list.map(function(item) {
-                        return <li key={item}>{item}</li>;
-                    })}
-                    </ul>
+                    {
+                    /* Note - this really hard to read, how can it be
+                    written more clearly? Move to top of render method? */
+                        (() => {
+                            let hasItems = this.state.list.length > 0;
+                            if (hasItems) {
+                                return <ul> {
+                                    this.state.list.map(item => {
+                                        return <li key={item}>{item}</li>;
+                                    })
+                                }
+                                </ul>
+                            } else {
+                                return <p>You have no to do items</p>
+                            }
+                        })()
+                    }
                 </section>
 
                 <section>
