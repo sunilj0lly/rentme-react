@@ -1,17 +1,27 @@
-"use strict";
-var React = require('react');
-var Actions = require('../actions.js')
+'use strict';
+var React = require('react'),
+    Actions = require('../actions.js'),
+    Store = require('../store.js'),
+    Reflux = require('reflux');
 
 module.exports = React.createClass({
-    // this will cause setState({list:updatedlist}) whenever the store does trigger(updatedlist)
-    //mixins: [Reflux.connect(todoListStore,"list")],
+    mixins: [Reflux.listenTo(Store, "onStatusChange")],
     getInitialState: function() {
         return {
             input: null,
             list: [],
-            inputValue: null,
             submitDisabled: false
         };
+    },
+    onStatusChange: function(items) {
+        this.setState({
+            'list': items,
+            input: null
+        });
+        /* can't see a way to clear the input field without setting
+        up a ref to it to clear it 'manually'. Not sure if this is
+        the best way to do this */
+        this.refs.input.value = '';
     },
     handleFormSubmit: function(e) {
         Actions.newItem(this.state.inputValue);
@@ -61,6 +71,7 @@ module.exports = React.createClass({
                     <h1>Add something new</h1>
                     <form onSubmit={this.handleFormSubmit}>
                         <input type="text"
+                            ref="input"
                             value={this.state.input}
                             placeholder='What do you need to do?'
                             onChange={this.handleInputChange} />

@@ -1,12 +1,12 @@
-var Reflux = require('reflux');
-var Actions = require('./actions.js');
-
-var toDoItems = [];
+'use strict';
+let Reflux = require('reflux');
+let Actions = require('./actions.js');
+let items = [];
 
 module.exports = Reflux.createStore({
     listenables: [Actions],
     onNewItem: function(text) {
-        toDoItems.push(text);
-        console.log(toDoItems);
+        items.push(text);
+        this.trigger(items);
     }
 });
