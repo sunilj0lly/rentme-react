@@ -7,9 +7,10 @@ module.exports = React.createClass({
     //mixins: [Reflux.connect(todoListStore,"list")],
     getInitialState: function() {
         return {
-            input: 'Add a new to do item',
+            input: null,
             list: [],
-            inputValue: null
+            inputValue: null,
+            submitDisabled: false
         };
     },
     handleFormSubmit: function(e) {
@@ -17,12 +18,24 @@ module.exports = React.createClass({
         e.preventDefault();
     },
     handleInputChange: function(e) {
-        this.setState({inputValue: e.target.value});
+        let inputValue = e.target.value;
+        let isValidInput = inputValue === '';
+        if (isValidInput) {
+            this.setState({ submitDisabled: 'disabled' });
+            return;
+        }
+        this.setState({
+            inputValue: e.target.value,
+            submitDisabled: false
+        });
     },
     render: function() {
 
         return (
             <div>
+                {
+                /* This seems like it should be two separate components */
+                }
                 <section>
                     <h1>Things that need to get done</h1>
                     {
@@ -47,8 +60,11 @@ module.exports = React.createClass({
                 <section>
                     <h1>Add something new</h1>
                     <form onSubmit={this.handleFormSubmit}>
-                        <input type="text" defaultValue={this.state.input} onChange={this.handleInputChange}/>
-                        <input type="submit" value="Add" />
+                        <input type="text"
+                            value={this.state.input}
+                            placeholder='What do you need to do?'
+                            onChange={this.handleInputChange} />
+                        <input type="submit" value="Add" disabled={this.state.submitDisabled} />
                     </form>
                 </section>
             </div>
